@@ -1,0 +1,13 @@
+[Unit]
+Description=Tells the system that it has been provisioned
+ConditionPathExists=!/var/msw_provisioned
+After=msw_provision.service
+Requires=msw_provision.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/touch /var/msw_provisioned
+
+[Install]
+WantedBy=multi-user.target
+
