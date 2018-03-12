@@ -1,0 +1,12 @@
+[Unit]
+Description=Provisions the system via a script on the /boot partition
+ConditionFileIsExecutable=/boot/msw_provision.sh
+ConditionPathExists=!/var/msw_provisioned
+
+[Service]
+Type=oneshot
+ExecStart=/boot/msw_provision.sh
+
+[Install]
+WantedBy=multi-user.target
+
