@@ -1,0 +1,16 @@
+[Unit]
+Description=Tells the system that it wants to use SSM with the configuration in the /boot/ssm file
+ConditionPathExists=/boot/ssm
+Before=amazon-ssm-agent.service
+Requires=amazon-ssm-agent.service
+Wants=network-online.service
+After=network-online.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "set -a && source /boot/ssm && amazon-ssm-agent --register --code \"$SSM_CODE\" --id \"$SSM_ID\" --region \"$SSM_REGION\" -y"
+ExecStart=/bin/rm -f /boot/ssm
+ExecStartPost=/bin/systemctl try-restart amazon-ssm-agent
+
+[Install]
+WantedBy=multi-user.target
