@@ -9,9 +9,11 @@ install -m 644 files/editor.sh ${ROOTFS_DIR}/etc/profile.d/editor.sh
 on_chroot << EOF
 curl https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_arm/amazon-ssm-agent.deb -o /root/amazon-ssm-agent.deb
 dpkg -i /root/amazon-ssm-agent.deb
-systemctl disable amazon-ssm-agent
 systemctl enable msw_provision
 systemctl enable msw_provisioned
 systemctl enable ssmsetup
+
+# amazon-ssm-agent struggles with running ansible without this fix
+sed -i.bak 's|^#*remote_tmp[^=]*=.*$|remote_tmp = /tmp/ansible|' /etc/ansible/ansible.cfg
 EOF
 
