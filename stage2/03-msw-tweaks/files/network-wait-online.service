@@ -1,0 +1,24 @@
+[Unit]
+Description=Wait for Network to be Online
+Documentation=man:systemd.service(5) man:systemd.special(7)
+Conflicts=shutdown.target
+Before=network-online.target
+Wants=network-online.target
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart= /bin/bash -c ' \
+    echo Wait for Network: enabled; \
+    until ping -q -w 1 -c 1 8.8.8.8 > /dev/null 2>&1; do \
+        echo -n '.'; \
+        sleep 1; \
+    done; \
+    echo "Online"; \
+'
+TimeoutStartSec=1min 30s
+
+[Install]
+WantedBy=network.target
